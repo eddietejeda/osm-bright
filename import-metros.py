@@ -1,27 +1,39 @@
 #!/usr/bin/env python
-import urllib2
-from subprocess import call
-from BeautifulSoup import BeautifulSoup
 import re
 import os
+import sys
+import urllib2
 
+from os import unlink
+from json import loads, dumps
+from glob import glob
+from shutil import rmtree
+from os.path import join, isdir, expanduser, exists
+from collections import defaultdict
+from BeautifulSoup import BeautifulSoup
+from subprocess import call
+
+if not exists('./configure.py'):
+  sys.stderr.write('Error: configure.py does not exist, did you forget to create it from the sample (configure.py.sample)?\n')
+  sys.exit(1)
+elif exists('./configure.pyc'):
+  unlink('./configure.pyc')
+
+from configure import config
+from lib.utils import copy_tree
 
 def main():
-  postgres_user = 'postgres'  #raw_input("Postgres Username: ")
-  postgis_database = 'openblight_create124'  #raw_input("Postgres Database: ")
-
   print_metro_list()
   map_id = raw_input("Metro ID: ")
-
-  osm_filename = get_metro_list_by_id(map_id)
+  osm_filename = get_metro_list_by_id( map_id )
 
   print 'Downloading:  ' + osm_filename
   download_map(osm_filename)
 
-  if database_exists(postgis_database) == 0:
+  if database_exists(config["postgis"]["dbname"]) == 0:
     create_postgis_database(postgis_database)
 
-  import_osm(postgres_user, postgis_database, osm_filename)
+  import_osm(osm_filename)
 
 
 def database_exists( dbname ):
@@ -38,12 +50,18 @@ def create_postgis_database( dbname ):
   response = os.popen(cmd,"r")
 
 
-def import_osm( postgres_user, postgis_database, osm_filename  ):
-  #now import
-  cmd = "imposm -U " + postgres_user + "  -d " + postgis_database + " -m ./imposm-mapping.py --read --write --optimize --deploy-production-tables --overwrite-cache  " + metro_name_to_local_path(osm_filename)
+def import_osm( osm_filename  ):
+  database_name = ''
+  database_username = ''
+  if len(config["postgis"]["dbname"]) > 0:
+    database_name = " -d " + config["postgis"]["dbname"] 
+
+  if len(config["postgis"]["user"]) > 0:
+    database_username = " -U " + config["postgis"]["user"] 
+
+  cmd = "imposm " + database_name + database_username + "  -m ./imposm-mapping.py --read --write --optimize --deploy-production-tables --overwrite-cache  " + metro_name_to_local_path(osm_filename)
   print cmd
   call(cmd, shell=True)
-  # response = os.popen(cmd,"r")
 
 
 def get_metro_list():

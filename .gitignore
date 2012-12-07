@@ -1,3 +1,8 @@
 build
 *.pyc
 configure.py
+imposm_coords.cache
+imposm_nodes.cache
+imposm_relations.cache
+imposm_ways.cache
+pbf/*

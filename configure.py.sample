@@ -4,12 +4,12 @@ from os import path
 from collections import defaultdict
 config = defaultdict(defaultdict)
 
-config["importer"] = "osm2pgsql" # either 'imposm' or 'osm2pgsql'
+config["importer"] = "imposm" # either 'imposm' or 'osm2pgsql'
 
 # The name given to the style. This is the name it will have in the TileMill
 # project list, and a sanitized version will be used as the directory name
 # in which the project is stored
-config["name"] = "OSM Bright"
+config["name"] = "Metro Maps"
 
 # The absolute path to your MapBox projects directory. You should 
 # not need to change this unless you have configured TileMill specially
@@ -19,9 +19,10 @@ config["path"] = path.expanduser("~/Documents/MapBox/project")
 # Leave empty for Mapnik defaults. The only required parameter is dbname.
 config["postgis"]["host"]     = ""
 config["postgis"]["port"]     = ""
-config["postgis"]["dbname"]   = "osm"
-config["postgis"]["user"]     = ""
+config["postgis"]["dbname"]   = "metro_maps"
+config["postgis"]["user"]     = "postgres"
 config["postgis"]["password"] = ""
+config["postgis"]["template"] = "template_postgis"
 
 # Increase performance if you are only rendering a particular area by
 # specifying a bounding box to restrict queries. Format is "XMIN,YMIN,XMAX,YMAX"

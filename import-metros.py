@@ -31,7 +31,7 @@ def main():
   download_map(osm_filename)
 
   if database_exists(config["postgis"]["dbname"]) == 0:
-    create_postgis_database(postgis_database)
+    create_postgis_database(config["postgis"]["dbname"])
 
   import_osm(osm_filename)
 
@@ -45,7 +45,7 @@ def database_exists( dbname ):
 
 def create_postgis_database( dbname ):
   # createdb -T template_postgis my_spatial_db
-  cmd='psql -t -c "CREATE DATABASE '+dbname+' TEMPLATE template_postgis"'
+  cmd='psql -t -c "CREATE DATABASE '+dbname+' TEMPLATE '+ config["postgis"]["template"]+'  "'
   print cmd
   response = os.popen(cmd,"r")
 

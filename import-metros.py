@@ -54,10 +54,11 @@ def get_metro_list():
 def print_metro_list():
   cities = get_metro_list()
   for i,city in enumerate(cities):
-    print "%d => %s"%(i+1,city.text)    
+    print "%d => %s"%(i,city.text)    
 
 def get_metro_list_by_id(city_id):
   cities = get_metro_list()
+  print city_id
   for i,city in enumerate(cities):
     if int(i) == int(city_id):
       return city.text
@@ -65,7 +66,7 @@ def get_metro_list_by_id(city_id):
 
 
 def metro_name_to_local_filename(filename):
-  return filename.lower().replace(' ', '-') + '.osm.bz2'
+  return filename.lower().replace(' ', '-').replace('.osm.bz2', '') + '.osm.bz2'
 
 
 def metro_name_to_local_path(filename):
